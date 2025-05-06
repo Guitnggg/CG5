@@ -7,5 +7,5 @@ PixelshaderOutPut main()
 {
     PixelshaderOutPut output;
     output.color = float4(1.0f, 1.0f, 1.0f, 1.0f);
-    returb output;
+    return output;
 }
