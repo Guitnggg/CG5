@@ -117,8 +117,27 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         assert(false);
 
         /// PSOの生成 --------------------
+        D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
+        graphicsPipelineStateDesc.pRootSignature = rootSignature;
+        graphicsPipelineStateDesc.InputLayout = inputLayoutDesc;
+        graphicsPipelineStateDesc.VS = { vsBlob->GetBufferPointer(),vsBlob->GetBufferSize() };
+        graphicsPipelineStateDesc.PS = { psBlob->GetBufferPointer(),psBlob->GetBufferSize() };
+        graphicsPipelineStateDesc.BlendState = blendDesc;
+        graphicsPipelineStateDesc.RasterizerState = rasterizerDesc;
+        // RTV
+        graphicsPipelineStateDesc.NumRenderTargets = 1;
+        graphicsPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+        // 利用するトポロジ（形状）タイプ
+        graphicsPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+        // 
+        graphicsPipelineStateDesc.SampleDesc.Count = 1;
+        graphicsPipelineStateDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
+        // 
+        ID3D12PipelineState* graphicsPipelineState = nullptr;
+        hr = dxCommon->GetDevice()->CreateGraphicsPipelineState(&graphicsPipelineStateDesc, IID_PPV_ARGS(&graphicsPipelineState));
+        assert(SUCCEEDED(hr));
 
-
+        /// VertexResourceの生成 --------------------
 
         //描画処理終了       
         dxCommon->PostDraw();
