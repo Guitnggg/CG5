@@ -1,16 +1,16 @@
-struct VertexshaderOutPut
+struct VertexShaderOutPut
 {
     float4 position : SV_POSITION;
 };
 
-struct VertexshaderInput
+struct VertexShaderInput
 {
     float4 position : POSITION0;
 };
 
-VertexshaderOutPut main(VertexshaderInput input)
+VertexShaderOutPut main(VertexShaderInput input)
 {
-    VertexshaderOutPut output;
+    VertexShaderOutPut output;
     output.position = input.position;
     return output;
 }

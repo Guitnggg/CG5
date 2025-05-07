@@ -7,6 +7,9 @@ using namespace KamataEngine;
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
+    // KamataEngineの初期化
+    KamataEngine::Initialize(L"LE3C_14_タカキ_ケンゴ");
+
     // DirectXCommonのインスタンスの取得
     DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 
@@ -18,8 +21,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     // DirextxCommonクラスが管理しているコマンドリストの取得
     ID3D12GraphicsCommandList* commandList = dxCommon->GetCommandList();
 	
-    // KamataEngineの初期化
-    KamataEngine::Initialize(L"LE3C_14_タカキ_ケンゴ");
+   
 
     /// RootSignatureの設定 --------------------
        // 構造体にデータを用意する
@@ -68,7 +70,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     ID3DBlob* errorBlob = nullptr;
 
     // VSshader 
-    std::wstring vsFile = L"Resources/shaders/TestVS.hlsl";
+    std::wstring vsFile = L"TestVS.hlsl";
     hr = D3DCompileFromFile(vsFile.c_str(), nullptr,
         D3D_COMPILE_STANDARD_FILE_INCLUDE,
         "main", "vs_5_0",
@@ -82,11 +84,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             DebugText::GetInstance()->ConsolePrintf(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
         }
         assert(false);
-    }
-  
+    }  
 
     // PSshader 
-    std::wstring psFile = L"Resources/shaders/TestPS.hlsl";
+    std::wstring psFile = L"TestPS.hlsl";
     hr = D3DCompileFromFile(psFile.c_str(), nullptr,
         D3D_COMPILE_STANDARD_FILE_INCLUDE,
         "main", "ps_5_0",
