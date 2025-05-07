@@ -26,11 +26,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     D3D12_ROOT_SIGNATURE_DESC descriptorRootSignature{};
     descriptorRootSignature.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
     ID3DBlob* signatureBlob = nullptr;
-    ID3DBlob* errorBlob = nullptr;
-    HRESULT hr = D3D12SerializeRootSignature(&descriptorRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
+    ID3DBlob* errorBlog = nullptr;
+    HRESULT hr = D3D12SerializeRootSignature(&descriptorRootSignature, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlog);
 
     if (FAILED(hr)) {
-        DebugText::GetInstance()->ConsolePrintf(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
+        DebugText::GetInstance()->ConsolePrintf(reinterpret_cast<char*>(errorBlog->GetBufferPointer()));
         assert(false);
     }
 
@@ -65,7 +65,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     // コンパイル済みのShader、エラー時の情報の格納場所の用意
     ID3DBlob* vsBlob = nullptr;
     ID3DBlob* psBlob = nullptr;
-    ID3DBlob* erroeBlob = nullptr;
+    ID3DBlob* errorBlob = nullptr;
 
     // VSshader 
     std::wstring vsFile = L"Resources/shaders/TestVS.hlsl";
@@ -73,7 +73,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         D3D_COMPILE_STANDARD_FILE_INCLUDE,
         "main", "vs_5_0",
         D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-        0, &vsBlob, &erroeBlob);
+        0, &vsBlob, &errorBlob);
 
     if (FAILED(hr)) {
         DebugText::GetInstance()->ConsolePrintf(std::system_category().message(hr).c_str());
@@ -81,8 +81,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         if (errorBlob) {
             DebugText::GetInstance()->ConsolePrintf(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
         }
+        assert(false);
     }
-    assert(false);
+  
 
     // PSshader 
     std::wstring psFile = L"Resources/shaders/TestPS.hlsl";
@@ -98,8 +99,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         if (errorBlob) {
             DebugText::GetInstance()->ConsolePrintf(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
         }
+        assert(false);
     }
-    assert(false);
+   
 
     /// PSOの生成 --------------------
     D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
