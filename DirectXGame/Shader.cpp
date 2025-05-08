@@ -3,6 +3,11 @@
 #include <d3dcompiler.h>
 #include <cassert>
 
+Shader::Shader()
+{
+    // 何もなし
+}
+
 Shader::~Shader()
 {
     if (blob_ != nullptr) {
