@@ -70,7 +70,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
     // VSshader
     Shader vs;
-    vs.Load(L"TestVS.hlsl", "vs_5_0");
+    vs.Load(L"resources/shaders/TestVS.hlsl", "vs_5_0");
     assert(vs.GetBlob() != nullptr);
 
     /*ID3DBlob* vsBlob = CompileShader(L"TestVS.hlsl", "vs_5_0");
@@ -78,7 +78,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
     // PSshader 
     Shader ps;
-    ps.Load(L"TestPS.hlsl", "ps_5_0");
+    ps.Load(L"resources/shaders/TestPS.hlsl", "ps_5_0");
     assert(ps.GetBlob() != nullptr);
 
     /*ID3DBlob* psBlob = CompileShader(L"TestPS.hlsl", "ps_5_0");
