@@ -7,9 +7,6 @@
 
 using namespace KamataEngine;
 
-// 関数プロトタイプ宣言
-//ID3D10Blob* CompileShader(const std::wstring& filePath, const std::string& shaderModel);
-
 // Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
@@ -181,26 +178,3 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
    
 	return 0;
 }
-
-/// ShaderCompile
-//ID3D10Blob* CompileShader(const std::wstring& filePath, const std::string& shaderModel) {
-//    ID3DBlob* shaderBlob = nullptr;
-//    ID3DBlob* errorBlob = nullptr;
-//
-//    HRESULT hr = D3DCompileFromFile(
-//        filePath.c_str(), 
-//        nullptr,
-//        D3D_COMPILE_STANDARD_FILE_INCLUDE,
-//        "main", shaderModel.c_str(),
-//        D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION,
-//        0, &shaderBlob, &errorBlob);
-//
-//    if (FAILED(hr)) {
-//        if (errorBlob) {
-//            OutputDebugStringA(reinterpret_cast<char*>(errorBlob->GetBufferPointer()));
-//            errorBlob->Release();
-//        }
-//        assert(false);
-//    }
-//    return shaderBlob;
-//}
