@@ -28,18 +28,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     DebugText::GetInstance()->ConsolePrintf(std::format("width:{}, height:{}\n", w, h).c_str());
 
     // DirextxCommonクラスが管理しているコマンドリストの取得
-    ID3D12GraphicsCommandList* commandList = dxCommon->GetCommandList();    
+    ID3D12GraphicsCommandList* commandList = dxCommon->GetCommandList();
 
     /// RootSignatureの設定 --------------------
     RootSignature rs;
     rs.Create();
 
-    // VSshader
+    // VSshader　--------------------
     Shader vs;
     vs.LoadDxc(L"resources/shaders/TestVS.hlsl", L"vs_6_0");
     assert(vs.GetDxcBlob() != nullptr);
 
-    // PSshader 
+    // PSshader ---------------------
     Shader ps;
     ps.LoadDxc(L"resources/shaders/TestPS.hlsl", L"ps_6_0");
     assert(ps.GetDxcBlob() != nullptr);
@@ -49,35 +49,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     SetupPipelineState(pipelineState, rs, vs, ps);
 
     /// VertexResourceの生成 --------------------
-    //// 頂点リソースのヒープ設定
-    //D3D12_HEAP_PROPERTIES uploadHeapProperties{};
-    //uploadHeapProperties.Type = D3D12_HEAP_TYPE_UPLOAD;
-    //// 頂点リソースの設定
-    //D3D12_RESOURCE_DESC vertexResourceDesc{};
-    //vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
-    //vertexResourceDesc.Width = sizeof(Vector4) * 3;
-    //// 
-    //vertexResourceDesc.Height = 1;
-    //vertexResourceDesc.DepthOrArraySize = 1;
-    //vertexResourceDesc.MipLevels = 1;
-    //vertexResourceDesc.SampleDesc.Count = 1;
-    //// 
-    //vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-    //// 
-    //ID3D12Resource* vertexResource = nullptr;
-    //HRESULT hr = dxCommon->GetDevice()->CreateCommittedResource(&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &vertexResourceDesc,
-    //    D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&vertexResource));
-    //assert(SUCCEEDED(hr));
-
-    ///// VertexBufferView --------------------
-    //D3D12_VERTEX_BUFFER_VIEW vertexBufferView{};
-    //// 
-    //vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
-    //// 
-    //vertexBufferView.SizeInBytes = sizeof(Vector4) * 3;
-    //// 
-    //vertexBufferView.StrideInBytes = sizeof(Vector4);
-
     VertexBuffer vb;
     vb.Create(sizeof(Vector4) * 3, sizeof(Vector4));
 
@@ -87,17 +58,17 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     vertexData[0] = { -0.5f,-0.5f,0.0f,1.0f };
     vertexData[1] = { 0.0f,0.5f,0.0f,1.0f };
     vertexData[2] = { 0.5f,-0.5f,0.0f,1.0f };
-    // 
-    /*vb.Get()->Unmap(0, nullptr);*/
 
+    // ===============
     // Mainループ
+    // ===============
     while (true) {
 
         // エンジンの更新
         if (KamataEngine::Update()) {
             break;
         }
-                
+
         // 描画処理開始       
         dxCommon->PreDraw();
 
@@ -106,7 +77,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         commandList->SetPipelineState(pipelineState.Get());                        // PSOの設定
         commandList->IASetVertexBuffers(0, 1, vb.GetView());                       // 頂点バッファの設定
         commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);  // トポロジの設定
-        
+
         commandList->DrawInstanced(3, 1, 0, 0);  // 描画（頂点数、インスタンス数、開始頂点インデックス、インデックスのオフセット）
 
         //描画処理終了       
@@ -115,8 +86,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
     // KamataEngineの終了 
     KamataEngine::Finalize();
-   
-	return 0;
+
+    return 0;
 }
 
 void SetupPipelineState(PipelineState& pipelineState, RootSignature& rs, Shader& vs, Shader& ps)
@@ -143,7 +114,7 @@ void SetupPipelineState(PipelineState& pipelineState, RootSignature& rs, Shader&
     rasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
     // 塗りつぶしモードをソリッドにする（ワイヤーフレームならD3D12_FILL_MODE_WIRERRAME)
     rasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-   
+
     // PSOの設定 --------------------
     D3D12_GRAPHICS_PIPELINE_STATE_DESC graphicsPipelineStateDesc{};
     graphicsPipelineStateDesc.pRootSignature = rs.Get();
