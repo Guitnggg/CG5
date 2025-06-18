@@ -53,15 +53,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     struct VertexData
     {
         Vector4 position;
+        Vector4 texcoord;
     };
 
     // 頂点データの準備　00_07追加
     VertexData vertices[] =
     {
-        {-1.0f,  1.0f, 0.0f, 1.0f},  // 左上
-        { 1.0f,  1.0f, 0.0f, 1.0f},  // 右上
-        {-1.0f, -1.0f, 0.0f, 1.0f},  // 左下
-        { 1.0f, -1.0f, 0.0f, 1.0f},  // 右下
+        {{-1.0f,  1.0f, 0.0f, 1.0f},{ 0.0f, 0.0f}},
+        {{ 1.0f,  1.0f, 0.0f, 1.0f},{ 0.0f, 1.0f}},
+        {{-1.0f, -1.0f, 0.0f, 1.0f},{ 1.0f, 0.0f}},
+        {{ 1.0f, -1.0f, 0.0f, 1.0f},{ 1.0f, 1.0f}},
     };
 
     /// VertexResourceの生成 --------------------
@@ -133,11 +134,15 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 void SetupPipelineState(PipelineState& pipelineState, RootSignature& rs, Shader& vs, Shader& ps)
 {
     // InputLayoutの設定 --------------------
-    D3D12_INPUT_ELEMENT_DESC inputElementDescs[1] = {};
+    D3D12_INPUT_ELEMENT_DESC inputElementDescs[2] = {};
     inputElementDescs[0].SemanticName = "POSITION";
     inputElementDescs[0].SemanticIndex = 0;
     inputElementDescs[0].Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
     inputElementDescs[0].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
+    inputElementDescs[1].SemanticName = "TEXCOORD";
+    inputElementDescs[1].SemanticIndex = 0;
+    inputElementDescs[1].Format = DXGI_FORMAT_R32G32_FLOAT;
+    inputElementDescs[1].AlignedByteOffset = D3D12_APPEND_ALIGNED_ELEMENT;
 
     D3D12_INPUT_LAYOUT_DESC inputLayoutDesc{};
     inputLayoutDesc.pInputElementDescs = inputElementDescs;
