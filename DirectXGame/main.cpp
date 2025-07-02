@@ -8,6 +8,7 @@
 #include "PipelineState.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "WorldTransformEx.h"
 
 using namespace KamataEngine;
 
@@ -193,6 +194,18 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         srvHandleCPU            // SRV用デスクリプタヒープのCPUHandle
     );
 
+    // アプリで利用する3Dモデル --------------------
+    // 被写体の準備
+    Model* model = Model::CreateFromOBJ("terrain");
+
+    WorldTransformEx worldTransform;
+    worldTransform.Initialize();
+    worldTransform.scale_ = Vector3(1.0f, 1.0f, 1.0f);
+
+    // カメラの準備
+    Camera camera;
+    camera.Initialize();
+    camera.translation_ = Vector3(0.0f, 1.0f, 0.0f);
 
     // ===============
     // Mainループ
@@ -203,6 +216,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         if (KamataEngine::Update()) {
             break;
         }
+
+        // world変換座標の定数バッファへの転送
+        worldTransform.rotation_.y += 0.005f;
+        worldTransform.UpdateMatrix();
+
+        // cameraの更新と定数バッファへの転送
+        camera.UpdateMatrix();
 
         // TransitionBarrierを　SRV→RTVに設定する
         D3D12_RESOURCE_BARRIER barrier{};
@@ -240,7 +260,14 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         // 全画面クリア
         commandList->ClearRenderTargetView(rtvHandleCPU, kRenderTargetClearColor, 0, nullptr);
         // 指定した深度で画面全体をクリアする
-        commandList->ClearDepthStencilView(dsvHandleCPU, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);     
+        commandList->ClearDepthStencilView(dsvHandleCPU, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+        // =====
+        // 描画
+        // =====
+        Model::PreDraw(commandList);
+        model->Draw(worldTransform, camera);
+        Model::PostDraw();
 
         // TransitionBarrierをもとに戻し、PixelShaderが扱えるようにする
         barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;                       // TranslationBarrierの設定
@@ -269,7 +296,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         // SRVのDescriptorTableの戦闘を設定　※ 0はrootParameter[0]である　☆00_09追加
         commandList->SetGraphicsRootDescriptorTable(0, srvHandleGPU);
 
+        // =========================
         // 画面を覆うポリゴンの描画
+        // =========================
         commandList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
 
         //描画処理終了       
@@ -277,6 +306,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     }
 
     // 解放
+    delete model;
+
     renderTextureResource->Release();
     srvDescriptorHeap->Release();
     rtvDescriptorHeap->Release();
