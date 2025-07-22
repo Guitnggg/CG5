@@ -205,7 +205,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     // カメラの準備
     Camera camera;
     camera.Initialize();
-    camera.translation_ = Vector3(0.0f, 1.0f, 0.0f);
+    camera.translation_ = Vector3(0.0f, 3.0f, -15.0f);
 
     // ===============
     // Mainループ
