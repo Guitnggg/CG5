@@ -1,6 +1,8 @@
 #include "RootSignature.h"
 #include "KamataEngine.h"
 
+#include <cassert>
+
 using namespace KamataEngine;
 
 RootSignature::RootSignature(){}

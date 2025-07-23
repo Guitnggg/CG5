@@ -91,7 +91,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         0, 1, 2,
         2, 1, 3
     };
-    
+
     // IndexBuffer(IndexResource, IndexResourceView)の生成
     IndexBuffer ib;
     ib.Create(sizeof(indices), sizeof(indices[0]));
@@ -134,7 +134,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     device->CreateRenderTargetView(
         renderTextureResource,  // Viewと関連付けたいリソース
         nullptr,                // RTVの詳細情報（Desc:Description,構成内容の記述）
-                                // ※RTVの場合　nullptrにするDirectX12が自動で推測してくれる
+        // ※RTVの場合　nullptrにするDirectX12が自動で推測してくれる
         rtvHandleCPU            // RTV用デスクリプタヒープのCPUHandle
     );
 
@@ -401,7 +401,8 @@ ID3D12Resource* CreateRenderTextureResource(ID3D12Device* device, uint32_t width
 
     // 4.RenderTextureResourceの生成
     ID3D12Resource* resource = nullptr;
-    HRESULT hr = device->CreateCommittedResource(
+    HRESULT hr;
+    hr = device->CreateCommittedResource(
         &heapProperties,                             // Heapの設定
         D3D12_HEAP_FLAG_NONE,                        // Heapの特殊な設定
         &resourceDesc,                               // Resourceの設定
@@ -438,7 +439,8 @@ ID3D12Resource* CreateDepthStencilTextureResource(ID3D12Device* device, int32_t 
 
     // 3.Resourceの生成
     ID3D12Resource* resource = nullptr;
-    HRESULT hr = device->CreateCommittedResource(
+    HRESULT hr;
+    hr = device->CreateCommittedResource(
         &heapProperties,                   // Heapの設定
         D3D12_HEAP_FLAG_NONE,              // Heapの特殊な設定
         &resourceDesc,                     // Resourceの設定

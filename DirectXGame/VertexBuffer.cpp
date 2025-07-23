@@ -6,14 +6,14 @@
 
 using namespace KamataEngine;
 
-VertexBuffer::VertexBuffer(){}
+VertexBuffer::VertexBuffer() {}
 
 VertexBuffer::~VertexBuffer()
 {
     if (vertexBuffer_) {
         vertexBuffer_->Release();
         vertexBuffer_ = nullptr;
-   }
+    }
 }
 
 void VertexBuffer::Create(const UINT size, const UINT stride)
@@ -30,17 +30,18 @@ void VertexBuffer::Create(const UINT size, const UINT stride)
     vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
     vertexResourceDesc.Width = size; // バッファのサイズ
     // バッファの場合はこれらを1に設定
-    vertexResourceDesc.Height = 1; 
-    vertexResourceDesc.DepthOrArraySize = 1; 
-    vertexResourceDesc.MipLevels = 1; 
-    vertexResourceDesc.SampleDesc.Count = 1; 
+    vertexResourceDesc.Height = 1;
+    vertexResourceDesc.DepthOrArraySize = 1;
+    vertexResourceDesc.MipLevels = 1;
+    vertexResourceDesc.SampleDesc.Count = 1;
     // バッファの場合はこれにする決まり
-    vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR; 
+    vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
     // 頂点リソースの生成
     ID3D12Resource* vertexResource = nullptr;
 
-    HRESULT hr = dxCommon->GetDevice()->CreateCommittedResource(
+    HRESULT hr;
+    hr = dxCommon->GetDevice()->CreateCommittedResource(
         &uploadHeapProperties,
         D3D12_HEAP_FLAG_NONE,
         &vertexResourceDesc,
@@ -59,7 +60,7 @@ void VertexBuffer::Create(const UINT size, const UINT stride)
     vertexBufferView.BufferLocation = vertexResource->GetGPUVirtualAddress();
 
     // 使用するリソースのサイズは頂点３つ分
-    vertexBufferView.SizeInBytes = size; 
+    vertexBufferView.SizeInBytes = size;
 
     // 1つの頂点のサイズ
     vertexBufferView.StrideInBytes = stride;
