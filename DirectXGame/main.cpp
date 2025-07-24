@@ -56,9 +56,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     assert(ps2.GetDxcBlob() != nullptr);
 
     /// PSOの生成 --------------------
-    Shader* currentPS = &ps1;
-    PipelineState pipelineState;
-    SetupPipelineState(pipelineState, rs, vs, *currentPS);
+    PipelineState pipelineState[2];
+    SetupPipelineState(pipelineState[0], rs, vs, ps1);
+    SetupPipelineState(pipelineState[1], rs, vs, ps2);
+
+    // 使用するPSOのインデックス
+    int currentIndex = 0;
 
     // リソースの確保含め、頂点情報を柔軟に対応できるようにVertexData構造体を新たに作成する
     struct VertexData
@@ -136,8 +139,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     // 2.RTV用のView生成
     device->CreateRenderTargetView(
         renderTextureResource,  // Viewと関連付けたいリソース
-        nullptr,                // RTVの詳細情報（Desc:Description,構成内容の記述）
-        // ※RTVの場合　nullptrにするDirectX12が自動で推測してくれる
+        nullptr,                // RTVの詳細情報（Desc:Description,構成内容の記述） ※RTVの場合　nullptrにするDirectX12が自動で推測してくれる
         rtvHandleCPU            // RTV用デスクリプタヒープのCPUHandle
     );
 
@@ -213,6 +215,8 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     // 入力受付
     Input* input = Input::GetInstance();
 
+   
+
     // ===============
     // Mainループ
     // ===============
@@ -224,15 +228,13 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         }
 
         // PS切り替え用       
-        static bool toggle = false;        
-
-        // ループ内で切り替え検出
-        if (input->TriggerKey(DIK_SPACE)) {
-            toggle = !toggle;
-            currentPS = toggle ? &ps2 : &ps1;
-            SetupPipelineState(pipelineState, rs, vs, *currentPS);
+        if (input->TriggerKey(DIK_1)) {
+            currentIndex = 0;
         }
-       
+
+        if (input->TriggerKey(DIK_2)) {
+            currentIndex = 1;
+        }
 
         // world変換座標の定数バッファへの転送
         worldTransform.rotation_.y += 0.005f;
@@ -301,7 +303,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
         // コマンドを積む
         commandList->SetGraphicsRootSignature(rs.Get());                           // ルートシグネチャの設定
-        commandList->SetPipelineState(pipelineState.Get());                        // PSOの設定
+        commandList->SetPipelineState(pipelineState[currentIndex].Get());                        // PSOの設定
 
         commandList->IASetVertexBuffers(0, 1, vb.GetView());                       // 頂点バッファの設定
         commandList->IASetIndexBuffer(ib.GetView());                               // IBVを設定する
