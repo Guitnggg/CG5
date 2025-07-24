@@ -210,6 +210,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     camera.Initialize();
     camera.translation_ = Vector3(0.0f, 3.0f, -15.0f);
 
+    // 入力受付
+    Input* input = Input::GetInstance();
+
     // ===============
     // Mainループ
     // ===============
@@ -220,19 +223,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
             break;
         }
 
-        // PS切り替え用
-        static bool toggle = false;
-        static bool prevKey = false;
+        // PS切り替え用       
+        static bool toggle = false;        
 
-        bool currentKey = GetAsyncKeyState(VK_SPACE) & 0x8000;
-        if (currentKey && !prevKey) {  // 押した瞬間
+        // ループ内で切り替え検出
+        if (input->TriggerKey(DIK_SPACE)) {
             toggle = !toggle;
             currentPS = toggle ? &ps2 : &ps1;
-
-            // PSO再構築
             SetupPipelineState(pipelineState, rs, vs, *currentPS);
         }
-        prevKey = currentKey;
+       
 
         // world変換座標の定数バッファへの転送
         worldTransform.rotation_.y += 0.005f;
