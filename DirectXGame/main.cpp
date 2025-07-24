@@ -49,13 +49,16 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
     assert(vs.GetDxcBlob() != nullptr);
 
     // PSshader ---------------------
-    Shader ps;
-    ps.LoadDxc(L"resources/shaders/TestPS.hlsl", L"ps_6_0");
-    assert(ps.GetDxcBlob() != nullptr);
+    Shader ps1, ps2;
+    ps1.LoadDxc(L"resources/shaders/VignettePS.hlsl", L"ps_6_0");
+    ps2.LoadDxc(L"resources/shaders/TestPS.hlsl", L"ps_6_0");
+    assert(ps1.GetDxcBlob() != nullptr);
+    assert(ps2.GetDxcBlob() != nullptr);
 
     /// PSOの生成 --------------------
+    Shader* currentPS = &ps1;
     PipelineState pipelineState;
-    SetupPipelineState(pipelineState, rs, vs, ps);
+    SetupPipelineState(pipelineState, rs, vs, *currentPS);
 
     // リソースの確保含め、頂点情報を柔軟に対応できるようにVertexData構造体を新たに作成する
     struct VertexData
@@ -216,6 +219,20 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
         if (KamataEngine::Update()) {
             break;
         }
+
+        // PS切り替え用
+        static bool toggle = false;
+        static bool prevKey = false;
+
+        bool currentKey = GetAsyncKeyState(VK_SPACE) & 0x8000;
+        if (currentKey && !prevKey) {  // 押した瞬間
+            toggle = !toggle;
+            currentPS = toggle ? &ps2 : &ps1;
+
+            // PSO再構築
+            SetupPipelineState(pipelineState, rs, vs, *currentPS);
+        }
+        prevKey = currentKey;
 
         // world変換座標の定数バッファへの転送
         worldTransform.rotation_.y += 0.005f;
