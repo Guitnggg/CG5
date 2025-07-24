@@ -17,12 +17,6 @@ PipelineState::~PipelineState()
 
 void PipelineState::Create(D3D12_GRAPHICS_PIPELINE_STATE_DESC desc)
 {
-    // PSを切り替えるときに前のPSOをReleaseする
-    if (pipelineState_) {
-        pipelineState_->Release(); 
-        pipelineState_ = nullptr;
-    }
-
     // クラス内で DirectXCommon のインスタンスを取得
     DirectXCommon* dxCommon = DirectXCommon::GetInstance();
 
